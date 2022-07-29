@@ -46,6 +46,10 @@ const User = db.define('user', {
     },
     img_url:{
         type: Sequelize.STRING,
+    },
+    balance:{
+        type: Sequelize.BIGINT,
+        defaultValue: 0
     }
 },
 {timestamps: true});
