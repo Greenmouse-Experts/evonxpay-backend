@@ -9,8 +9,8 @@ const host = process.env.HOST
 const url = process.env.DB_URL
 
 
-var db = new Sequelize("evonexpay", "root", "Gooday@23", {
-    host: "127.0.0.1",
+var db = new Sequelize("heroku_64732accca4c7ae", "bef984dbce5528", "14ca73dc", {
+    host: "us-cdbr-east-06.cleardb.net",
     dialect: 'mysql',
     pool: {
       maxConnections: 10,
