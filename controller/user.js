@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 require('dotenv').config();
 const nodemailer = require('nodemailer')
+const Transaction = require("../model/transaction");
 /*const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
 
@@ -369,16 +370,21 @@ exports.LoginUser = async (role, req, res) => {
             return res.status(404).json({
                 status: false,
                 message: 'User does not exist',
-                
             });
         }
 
         if(user.role !== role){
             return res.status(401).json({
-                status: false,
-                message: "Please ensure you are logging-in from the right portal",
-                
+              status: false,
+              message: "Please ensure you are logging-in from the right portal",
             });
+        }
+
+        if (user.emailVerify == false) {
+          return res.status(401).json({
+              status: false,
+              message: "Please verify your account to login",
+          });
         }
         
         const validate = await bcrypt.compare(password, user.password);
@@ -570,11 +576,13 @@ exports.getUser = async (req, res) => {
         if (user){
             return res.status(200).json({
                 status: true,
-                message: user})
+                data: user
+            })
         } else{
             return res.status(404).json({
                 status: false,
-                message: "No user found"})
+                message: "No user found"
+          })
         }
 
     } catch (error) {
@@ -598,7 +606,7 @@ exports.getUser = async (req, res) => {
       if (user){
           return res.status(200).json({
               status: true,
-              message: user})
+              data: user})
       } else{
           return res.status(404).json({
               status: false,
@@ -614,6 +622,32 @@ exports.getUser = async (req, res) => {
       })
   }
 };
+
+exports.userTransaction = async (req, res) => {
+  try {
+    const trans = await Transaction.findAll({
+      where: {
+        userId: req.user.id
+      }
+    })
+    if (trans){
+      return res.status(200).json({
+          status: true,
+          data: trans})
+      } else{
+          return res.status(404).json({
+              status: false,
+              message: "No Transaction found"})
+      }
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({
+      status: false,
+      message: "error occured",
+      error: error
+  })
+  }
+}
 
 exports.updateUser = async(req, res) => {
     //const { fullname, email, phone_no, country, serviceType} = req.body

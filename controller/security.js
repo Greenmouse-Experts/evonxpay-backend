@@ -24,7 +24,8 @@ exports.emailVerification_V1 = async(req, res) => {
             email: req.user.email
         }})
         if(user){
-            const token = jwt.sign({email: user.email}, process.env.TOKEN, { expiresIn: "15m"});
+            const token = jwt.sign({email: user.email}, process.env.TOKEN, { expiresIn: "72h"});
+            //const token = jwt.sign({email: user.email}, process.env.TOKEN, { expiresIn: "24h"});
             const link = `${process.env.BASE_URL}/email-verification?userId=${user.id}&token=${token}`;
 
                 var transporter = nodemailer.createTransport({
@@ -334,15 +335,17 @@ exports.emailVerification_V2 = async(req, res) => {
 try {
         const token = req.query.token;
         const id = req.query.userId;
+        console.log(req.query)
         var user = await User.findOne({
           where:{
-            id: id
+            id: req.query.id
           }
         })
         jwt.verify(token, process.env.TOKEN, async(err, decode) =>{
+          //console.log(decode.email)
           if(decode && decode.email === user.email){
-                await User.update({email_verify: true}, {where: {
-                    id: id
+                await User.update({emailVerify: true}, {where: {
+                    id: req.query.id
                 }})
                 res.status(200).json({ 
                     status: true,
@@ -375,7 +378,8 @@ exports.checkEmail = async(req, res) => {
         }})
         //console.log(user);
         if(user){
-            const token = jwt.sign({email: email}, process.env.TOKEN, { expiresIn: "15m"});
+            //const token = jwt.sign({email: email}, process.env.TOKEN);
+            const token = jwt.sign({email: email}, process.env.TOKEN, { expiresIn: "72h"});
             const link = `${process.env.BASE_URL}/reset-password?userId=${user.id}&token=${token}`;
             //console.log(link);
                 var transporter = nodemailer.createTransport({

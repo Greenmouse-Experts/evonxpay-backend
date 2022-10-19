@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('../util/multer2');
-const { profile, RegisterUser, LoginUser, checkRole, getUser, getUsers, updateUser, deleteUser, userAuth } = require('../controller/user');
+const { profile, RegisterUser, LoginUser, checkRole, getUser, getUsers, updateUser, deleteUser, userAuth, userTransaction } = require('../controller/user');
 const {checkEmail, changePassword, forgotPassword, emailVerification_V1, emailVerification_V2} = require('../controller/security');
 // const {  verification, getUnverifieds, getVendors, getVendorsByServices} = require('../controllers/vendor')
 const {  uploadPicture, deletePicture} = require('../controller/picture')
 const jwtAuth = require('../middleware/jwtAuth');
+const {getBillers} = require('../controller/Biller');
+const {addToWallet, verify} = require('../controller/wallet');
 // const { getCinemaServices, getCinemaByTitle, getCinemaForUser, getCinemaById} = require('../controllers/services/cinema');
 // const {getFoodByTitle, getFoodForUser, getFoodServices, getFoodById} = require('../controllers/services/food');
 // const { getHotelByTitle, getHotelForUser, getHotelServices, getHotelById } = require('../controllers/services/hotel');
@@ -16,6 +18,12 @@ const jwtAuth = require('../middleware/jwtAuth');
 // const {bookHotel, hotelverify} = require('../controllers/Hotelbookings');
 // const {getRestuarant, getRestuarants} = require('../controllers/restuarant')
 
+
+router.get('/', (req, res) => {
+    return res.send({
+        name: "Moshood"
+    })
+})
 
 //user
 router
@@ -69,9 +77,20 @@ router
 .post(checkEmail)
 .get(forgotPassword);
 
+
+router.get('/user/transaction', jwtAuth, userTransaction)
+
 router
 .route('/change-password')
 .post(jwtAuth, changePassword);
+
+router.get("/getBiller", getBillers);
+
+router.post("/deposit-wallet", jwtAuth, addToWallet);
+
+router.post("/api/pay/verify", verify);
+
+
 
 
 

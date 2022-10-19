@@ -71,7 +71,7 @@ exports.verify = async(req, res, next)=>{
                     }
 
                     var trnx = new Transaction({
-                        userId: transaction.data.metadata.userId,
+                        userId: transaction.data.metadata.user_id,
                         ref_no: ref,
                         status: transaction.data.status,
                         type: transaction.data.metadata.type,
@@ -80,6 +80,7 @@ exports.verify = async(req, res, next)=>{
                     })
 
                     var savetrnx = await trnx.save();
+                    console.log(savetrnx)
                     if(savetrnx){
                          await User.findOne({
                         where:{
