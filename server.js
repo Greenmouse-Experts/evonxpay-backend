@@ -8,9 +8,6 @@ db.authenticate()
 
 db.sync();
 
-
-
-const port = 9000
-app.listen(port, ()=> {
-    console.log(`listening to port ${port}, at http://localhost:${port}}`)
+app.listen(process.env.PORT || 3001, '0.0.0.0', ()=> {
+    console.log(`listening to port ${process.env.PORT || 3001}, at http://localhost:${process.env.PORT || 3001}}`)
 })
