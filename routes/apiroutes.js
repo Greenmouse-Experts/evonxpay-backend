@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('../util/multer2');
-const { profile, RegisterUser, LoginUser, checkRole, getUser, getUsers, updateUser, deleteUser, userAuth, userTransaction } = require('../controller/user');
+const { profile, RegisterUser, LoginUser, checkRole, getUser, getUsers, updateUser, deleteUser, userAuth, userTransaction, allTransaction } = require('../controller/user');
 const {checkEmail, changePassword, forgotPassword, emailVerification_V1, emailVerification_V2} = require('../controller/security');
 // const {  verification, getUnverifieds, getVendors, getVendorsByServices} = require('../controllers/vendor')
 const {  uploadPicture, deletePicture} = require('../controller/picture')
@@ -48,6 +48,8 @@ router
     await LoginUser("admin", req, res);
 });
 
+router.get('/admin/getAllUsers', jwtAuth, getUsers)
+
 
 router
 .route('/dashboard/profile')
@@ -79,6 +81,7 @@ router
 
 
 router.get('/user/transaction', jwtAuth, userTransaction)
+router.get('/transactions', jwtAuth, allTransaction)
 
 router
 .route('/change-password')

@@ -527,6 +527,35 @@ exports.webLoginUser = async (role, req, res) => {
 };
 
 
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.findAll();
+    if (users) {
+        return res.status(200).json({
+                  
+          status: true,
+          message: "Successfully logged in",
+          data: Users
+          
+      });
+    } else {
+        return res.status(403).json({
+          status: false,
+          message: 'Something is wrong',
+            
+        });
+    }
+  } catch (error) {
+    console.error(error)
+       return res.status(500).json({
+            status: false,
+            message: "Error occured",
+            error: error
+        })
+  }
+}
+
+
 exports.userAuth = passport.authenticate('jwt', {session: false});
 
 
@@ -630,6 +659,37 @@ exports.userTransaction = async (req, res) => {
         userId: req.user.id
       }
     })
+    if (trans){
+      return res.status(200).json({
+          status: true,
+          data: trans})
+      } else{
+          return res.status(404).json({
+              status: false,
+              message: "No Transaction found"})
+      }
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({
+      status: false,
+      message: "error occured",
+      error: error
+  })
+  }
+}
+
+exports.allTransaction = async (req, res) => {
+  try {
+    const trans = await Transaction.findAll({
+      include: [
+        {
+          model: User,
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "deletedAt"],
+          },
+        },
+      ]
+    });
     if (trans){
       return res.status(200).json({
           status: true,
