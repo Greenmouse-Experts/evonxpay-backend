@@ -6,7 +6,7 @@ const {checkEmail, changePassword, forgotPassword, emailVerification_V1, emailVe
 // const {  verification, getUnverifieds, getVendors, getVendorsByServices} = require('../controllers/vendor')
 const {  uploadPicture, deletePicture} = require('../controller/picture')
 const jwtAuth = require('../middleware/jwtAuth');
-const {getBillers} = require('../controller/Biller');
+const {getBillers, getDataBundle, validateBill} = require('../controller/Biller');
 const {addToWallet, verify} = require('../controller/wallet');
 // const { getCinemaServices, getCinemaByTitle, getCinemaForUser, getCinemaById} = require('../controllers/services/cinema');
 // const {getFoodByTitle, getFoodForUser, getFoodServices, getFoodById} = require('../controllers/services/food');
@@ -88,6 +88,8 @@ router
 .post(jwtAuth, changePassword);
 
 router.get("/getBiller", getBillers);
+router.get("/getDataBundle", getDataBundle);
+router.post("/validateBill", validateBill);
 
 router.post("/deposit-wallet", jwtAuth, addToWallet);
 
