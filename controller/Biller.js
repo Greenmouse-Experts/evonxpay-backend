@@ -1,5 +1,7 @@
 const Flutterwave = require('flutterwave-node-v3');
 const request = require('request');
+var axios = require('axios');
+const { random, nanoid } = require('nanoid');
 
 const flw = new Flutterwave(process.env.FLW_PUBLIC_KEY, process.env.FLW_SECRET_KEY);
 
@@ -63,4 +65,42 @@ exports.getDataBundle = async(req, res) => {
     } catch (error) {
         console.log(error)
     }
+}
+
+
+exports.createBill = (req, res) => {
+    var config = {
+        'method': 'POST',
+         'url': `https://api.flutterwave.com/v3/bills`,
+         'headers': {
+           'Authorization': `Bearer ${process.env.FLW_SECRET_KEY}`,
+           'Content-Type': 'application/json'
+         },
+           data: {
+           country: 'NG',
+           customer: req.body.customer,
+           amount: req.body.amount,
+           recurrence: 'ONCE',
+           type: req.body.type,
+           reference: nanoid(10),
+           biller_name: req.body.biller_name
+        }
+    };
+
+    axios(config)
+    .then(function (response) {
+        console.log(JSON.stringify(response.data.data));
+        res.status(200)
+        .send({
+            body: response.data.data
+        })
+    })
+    .catch(function (error) {
+        console.log(error.response.data);
+        res.status(200)
+        .send({
+            error: error.response.data
+        })
+    });
+
 }
