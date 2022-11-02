@@ -104,3 +104,17 @@ exports.createBill = (req, res) => {
     });
 
 }
+
+exports.validateBVN = async(req, res, next) => {
+    try {
+        const payload = {"bvn": "123456789010"};
+        const response = await flw.Misc.bvn(payload);
+        res.status(200)
+        .send({
+            body: response
+        })
+    } catch (error) {
+        
+    }
+    
+}
